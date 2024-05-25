@@ -34,16 +34,21 @@ jobs:
       # creates executable called codekarma_cli that runs with network
       # and read permissions and binds to port 5000
       #
-      # deno install \
+      # deno install -g \
       #     --allow-net --allow-read \
       #     --root /usr/local \
-      #     -n codekarma_cli /codekarma/codekarma-cli.ts -- -p 5000
+      #     --name codekarma_cli https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/codekarma-cli.ts -- -p 5000
       #
       # deno run --help 
+      # curl file:///codekarma/codekarma-cli.ts | deno run -
+      # WORKS - curl https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/codekarma-cli.ts | deno run -
       run: |
         echo 'export PATH="$HOME/.deno/bin:$PATH"' >> ~/.bashrc
         source ~/.bashrc
-        curl file:///codekarma/codekarma-cli.ts | deno run -
+        deno install -g \
+          --allow-net --allow-read \
+          --root /codekarma \
+          --name codekarma_cli https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/codekarma-cli.ts -- -p 5000
     # Compare desired manifest or plugin compliance expectations with
     # latest watched file change in demo template repo in build directory
     - name: Detect and report non-compliance with manifest or plugin registry
