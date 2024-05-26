@@ -1,0 +1,70 @@
+# example workflows:
+#   https://github.com/actions/checkout/tree/main/.github/workflows
+#
+# context: https://docs.docker.com/build/ci/github-actions/named-contexts/
+name: dev
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'node_module/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'node_module/**'
+
+jobs:
+  # run our deno cli app against the demo template ts file and demo manifest file
+  run:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Unzip and Curl required to setup Deno
+      run: |
+        apt-get update -y && apt-get upgrade -y \
+        && apt-get install unzip curl -y
+    - name: Setup Deno
+      uses: denoland/setup-deno@v1.1.4 
+      with:
+        deno-version: v1.43.6
+    - name: Install CodeKarma using Deno Install
+      # https://docs.deno.com/runtime/manual/tools/script_installer
+      # creates executable called codekarma_cli that runs with network
+      # and read permissions and binds to port 5000
+      #
+      # deno install -g \
+      #     --allow-net --allow-read \
+      #     --root /usr/local \
+      #     --name codekarma_cli https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/codekarma-cli.ts -- -p 5000
+      #
+      # deno run --help 
+      # curl file:///codekarma/codekarma-cli.ts | deno run -
+      # WORKS - curl https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/codekarma-cli.ts | deno run -
+      run: |
+        echo 'export PATH="$HOME/.deno/bin:$PATH"' >> ~/.bashrc
+        source ~/.bashrc
+        deno install -g \
+          --allow-net --allow-read \
+          --root /codekarma \
+          --name codekarma_cli https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/codekarma-cli.ts -- -p 5000
+    # Compare desired manifest or plugin compliance expectations with
+    # latest watched file change in demo template repo in build directory
+    - name: Detect and report non-compliance with manifest or plugin registry
+      run: |
+        /codekarma/codekarma_cli | grep 'warning' &> /dev/null
+        if [ $? == 0 ]; then
+          echo "Detected compliance warning after file change in latest build. See report below:"
+          /codekarma/codekarma_cli
+          exit 1
+        fi
+
+    # # If we detected a non-compliance warning in the source file .ts or
+    # # compiled .js in dist/ folder then upload the non-compliance as an artifact
+    # - uses: actions/upload-artifact@v4
+    #   if: ${{ failure() && steps.diff.conclusion == 'failure' }}
+    #   with:
+    #     name: dist
+    #     path: dist/
+

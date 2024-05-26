@@ -1,0 +1,115 @@
+# example workflows:
+#   https://github.com/actions/checkout/tree/main/.github/workflows
+#
+# context: https://docs.docker.com/build/ci/github-actions/named-contexts/
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'node_module/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'node_module/**'
+  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+  # schedule:
+  #   - cron:  '15 * * * *'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # https://docs.docker.com/build/ci/github-actions/named-contexts/#using-with-a-container-builder
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+    steps:
+    # https://github.com/actions/checkout
+    # https://github.com/actions/checkout/releases
+    - name: Checkout
+      uses: actions/checkout@v4.1.6
+      with:
+        # Repository name with owner. For example, actions/checkout
+        # Default: ${{ github.repository }}
+        repository: 'https://github.com/ltfschoen/ethberlin04'
+
+        # The branch, tag or SHA to checkout. When checking out the repository that
+        # triggered a workflow, this defaults to the reference or SHA for that event.
+        # Otherwise, uses the default branch.
+        ref: 'main'
+        fetch-depth: 0
+    # https://github.com/denoland/deno/releases
+    # https://github.com/denoland/setup-deno/releases
+    - name: Setup Deno
+      uses: denoland/setup-deno@v1.1.4
+      with:
+        deno-version: v1.43.6
+    # install dependencies
+    - name: Install Deno
+      run: deno install
+    - name: Test Deno
+      run: deno test
+    # TODO: run tests against our demo template repo (containing ts file and manifest file)
+
+  # run our deno cli app against the demo template ts file and demo manifest file
+  run:
+    runs-on: ubuntu-latest
+    steps:
+    # - name: Checkout
+    #   uses: actions/checkout@v4.1.6
+    #   with:
+    #     repository: 'https://github.com/ltfschoen/ethberlin04'
+    #     ref: 'main'
+    #     fetch-depth: 0
+    # - name: Setup Deno
+    #   uses: denoland/setup-deno@v1.43.6 
+    #   with:
+    #     deno-version: v1.43.6 
+    # - name: Install Deno
+    #   run: deno install
+    # # https://github.com/marketplace/actions/docker-setup-buildx
+    # - name: Set up Docker Buildx
+    #   uses: docker/setup-buildx-action@v3
+    #   with:
+    #     # network=host driver-opt needed to push to local registry
+    #     driver-opts: network=host
+    # - name: Build base image
+    #   uses: docker/build-push-action@v5
+    #   with:
+    #     context: ./base
+    #     file: ./base/Dockerfile
+    #     tags: localhost:5000/my-base-image:latest
+    #     push: true
+    # - name: Build
+    #   uses: docker/build-push-action@v5
+    #   with:
+    #     context: .
+    #     build-contexts: |
+    #       alpine=docker-image://localhost:5000/my-base-image:latest            
+    #     tags: myimage:latest
+
+    # Compare desired manifest or plugin compliance expectations with
+    # latest watched file change in demo template repo in build directory
+    - name: Detect and report non-compliance with manifest or plugin registry
+      # if: github.event.schedule == '15 * * * *'
+      run: |
+        ./codekarma --manifest-file="./manifest.json" --project-path="./" | grep 'warning' &> /dev/null
+        if [ $? == 0 ]; then
+          echo "Detected compliance warning after file change in latest build. See report below:"
+          codekarma --manifest-file="./manifest.json" --project-path="./"
+          exit 1
+        fi
+
+    # # If we detected a non-compliance warning in the source file .ts or
+    # # compiled .js in dist/ folder then upload the non-compliance as an artifact
+    # - uses: actions/upload-artifact@v4
+    #   if: ${{ failure() && steps.diff.conclusion == 'failure' }}
+    #   with:
+    #     name: dist
+    #     path: dist/
+
