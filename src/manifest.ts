@@ -2,17 +2,18 @@ import { parseArgs, parse } from "./dependencies.ts";
 import { parseCommandLine } from "./util.ts";
 
 export class Rule {
+  readonly definition: string;
   readonly result: string;
   readonly name: string;
   readonly args: ReturnType<typeof parseArgs>;
 
-  constructor(text: string) {
-    const argList = parseCommandLine(text)
+  constructor(definition: string) {
+    const argList = parseCommandLine(definition)
     const args = parseArgs(argList);
-    console.log("Rule.create", text, argList, args);
     if (args._.length < 2) {
       throw new Error("Rule must have at least two arguments, example: 'avoid content --contains=google'");
     }
+    this.definition = definition;
     this.result = args._[0] as string;
     this.name = args._[1] as string;
     args._ = args._.slice(2) as string[];

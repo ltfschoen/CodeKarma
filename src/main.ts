@@ -13,11 +13,11 @@ async function main(args: string[]): Promise<void> {
     ...defaultParameters,
     ...parsedArgs,
   }
-  console.log("raw args, final", parsedArgs, parameters);
 
   const plugins = await loadPlugins(join(root, config.plugin.folder), config.plugin.suffix);
   const manifest = Manifest.load(join(root, parameters.manifest));
   const files = await listRecursively(root);
+  console.log(`✨ Running Code Karma manifest ${parameters.manifest} on ${root} with plugins ${Array.from(plugins.keys())} ✨\n`);
   run(parameters, manifest, plugins, files);
 
 }
@@ -26,20 +26,19 @@ if (import.meta.main) {
   main(Deno.args);
 }
 
-function run(parameters: Parameters, manifest: Manifest, plugins: Plugins, files: string[]) {
+async function run(parameters: Parameters, manifest: Manifest, plugins: Plugins, files: string[]) {
   for (const rule of manifest.rules) {
     const plugin = plugins.get(rule.name);
-    console.log('run', rule.name, plugin, plugin?.execute);
     if (!plugin) {
       console.error(`Plugin ${rule.name} does not exist! Rule will be ignored.`, rule);
       continue;
     }
-    plugin.execute(rule, parameters, files);
+    const result = await plugin.execute(rule, parameters, files);
+    console.log(result ? '✅' : '❌', rule.definition);
   }
 }
 
 async function loadPlugins(folder: string, suffix: string): Promise<Plugins> {
-  console.log("loadPlugins", folder, suffix);
   if (!existsSync(folder)) {
     throw new Error(`Plugins directory does not exist: ${folder}`);
   }
@@ -49,7 +48,6 @@ async function loadPlugins(folder: string, suffix: string): Promise<Plugins> {
     if (dirEntry.isFile && dirEntry.name.endsWith(suffix)) {
       const name = dirEntry.name.replace(suffix, '');
       const path = join(folder, dirEntry.name);
-      console.log("loadPlugins", name, path);
       const { default: pluginClass } = await import(path);
       const plugin = new pluginClass();
       if (plugin) {
@@ -61,7 +59,6 @@ async function loadPlugins(folder: string, suffix: string): Promise<Plugins> {
           plugin.init();
         }
         plugins.set(name, plugin);
-        console.log(`Loaded plugin ${name} from ${path}`);
       } else {
         console.error(`Failed to load plugin ${name} from ${path}`);
       }
