@@ -37,22 +37,22 @@ jobs:
       # deno install -g \
       #     --allow-net --allow-read \
       #     --root /usr/local \
-      #     --name codekarma_cli https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/codekarma-cli.ts -- -p 5000
+      #     --name codekarma_cli https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/src/main.ts -- -p 5000
       #
       # deno run --help 
-      # curl file:///codekarma/codekarma-cli.ts | deno run -
-      # WORKS - curl https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/codekarma-cli.ts | deno run -
+      # curl file:///codekarma/src.main.ts | deno run -
+      # WORKS - curl https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/src/main.ts | deno run -
       run: |
         echo 'export PATH="$HOME/.deno/bin:$PATH"' >> ~/.bashrc
         source ~/.bashrc
         deno install -g \
           --allow-net --allow-read \
           --root /codekarma \
-          --name codekarma_cli https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/codekarma-cli.ts -- -p 5000
-    - name: Troubleshooting using `deno run` instead to try to avoid getting error `Couldn't open file /codekarma/codekarma-cli.ts`
+          --name codekarma_cli https://raw.githubusercontent.com/ltfschoen/ethberlin04/main/src/main.ts -- -p 5000
+    - name: Troubleshooting using `deno run` instead to try to avoid getting error `Couldn't open file /codekarma/src/main.ts`
       run: |
-        curl file:///codekarma/codekarma-cli.ts | deno run -
-    - name: Troubleshooting to try to check why getting error `Couldn't open file /codekarma/codekarma-cli.ts`
+        curl file:///codekarma/src/main.ts | deno run -
+    - name: Troubleshooting to try to check why getting error `Couldn't open file /codekarma/src/main.ts`
       run: |
         touch /codekarma/log.txt
         status=$(echo $PWD > /codekarma/log.txt 2>&1; echo $?)
