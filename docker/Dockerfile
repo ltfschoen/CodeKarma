@@ -15,11 +15,9 @@ ENV USER=user
 RUN echo "Running" \
   && apt-get update -y && apt-get upgrade -y \
   && apt-get install git vim curl unzip -y \
-  && useradd -m -u 1000 -U -s /bin/sh -d /$USER $USER \
+  && useradd -m -u 2000 -U -s /bin/sh -d /$USER $USER \
   && chown -R $USER:$USER /codekarma \
   && curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/nektos/act/master/install.sh | bash \
-  && cp /codekarma/dist/codekarma /usr/local/bin \
-  && /usr/local/bin/codekarma --version \
   && echo "Ready"
 
 USER $USER
