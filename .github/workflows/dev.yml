@@ -62,7 +62,7 @@ jobs:
     # latest watched file change in demo template repo in build directory
     - name: Detect and report non-compliance with manifest or plugin registry
       run: |
-        /codekarma/codekarma_cli | grep 'warning' &> /dev/null
+        /codekarma/codekarma_cli | grep '❌' &> /dev/null
 
         if [ $? == 0 ]; then
           echo "Detected compliance warning after file change in latest build. See report below:"
