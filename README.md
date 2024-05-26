@@ -21,7 +21,7 @@ https://github.com/users/ltfschoen/projects/2
 ./run.sh
 ```
 * View output
-[preview](./screenshots/preview.png)
+![preview](./screenshots/preview.png)
 
 ## WIP - Check my dependencies
 
