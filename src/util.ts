@@ -1,11 +1,11 @@
 import { join } from "./dependencies.ts";
 
-export async function listRecursively(directory: string) {
-  const files = [];
+export async function listRecursively(directory: string, files: string[] = []) {
   for await (const entry of Deno.readDir(directory)) {
     const fullPath = join(directory, entry.name);
     if (entry.isDirectory) {
-      await listRecursively(fullPath);
+      await listRecursively(fullPath, files);
+    } else {
       files.push(fullPath);
     }
   }
