@@ -1,0 +1,22 @@
+# no big tech
+avoid:
+  - imports: 
+    -: *google*
+  - license:
+    - no-licence
+    - MIT
+
+recommend:
+  - content:
+    - contains linux
+  - license:
+    - GPL3
+    - MIT
+
+require:
+  - content:
+    - contains linux
+  - imports:
+    - 
+
+
