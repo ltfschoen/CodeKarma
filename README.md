@@ -2,8 +2,10 @@
 
 > A CLI tool to check that the code you write aligns with your values written in your manifesto.
 
+# Overview
+
 Simple Deno CLI app using Act for local Github Actions to demonstrate checking
-compliance of dependencies in a repository against a manifesto.
+compliance of dependencies in a repository against a manifesto of an ideology.
 
 # Use
 
@@ -38,9 +40,12 @@ unset DOCKER_DEFAULT_PLATFORM
 export DOCKER_DEFAULT_PLATFORM=linux/amd64
 ./docker/build.sh
 ```
+
 * Run Docker container
+```
 ./docker/run.sh
 ```
+
 * Enter shell of Docker container
 ```
 docker exec --user root -it ltfschoen-ethberlin04 /bin/bash
