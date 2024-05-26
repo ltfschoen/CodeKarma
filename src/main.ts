@@ -27,6 +27,7 @@ if (import.meta.main) {
 }
 
 async function run(parameters: Parameters, manifest: Manifest, plugins: Plugins, files: string[]) {
+  let score = 0;
   for (const rule of manifest.rules) {
     const plugin = plugins.get(rule.name);
     if (!plugin) {
@@ -34,8 +35,10 @@ async function run(parameters: Parameters, manifest: Manifest, plugins: Plugins,
       continue;
     }
     const result = await plugin.execute(rule, parameters, files);
+    score += result;
     console.log(result ? '✅' : '❌', rule.definition);
   }
+  console.log(`\n🏆 Score: ${score} / ${manifest.rules.length}`);
 }
 
 async function loadPlugins(folder: string, suffix: string): Promise<Plugins> {
