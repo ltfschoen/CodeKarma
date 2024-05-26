@@ -1,0 +1,5 @@
+# no big tech
+avoid content --contains=google
+
+# something nice?
+recommend content --contains=linux

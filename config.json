@@ -1,0 +1,7 @@
+{
+    "plugin": {
+        "folder": "plugins",
+        "suffix": ".plugin.ts"
+    }
+}
+
