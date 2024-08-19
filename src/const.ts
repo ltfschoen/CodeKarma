@@ -1,8 +1,8 @@
 import { Parameters } from "./types.ts";
 
 export const defaultParameters: Parameters = {
-  manifest: "codekarma.manifest",
-  project: "./",
+  manifest: "codekarma.manifest.yaml",
+  project: "./samples/javascript-project",
   // ignore: [],
   // include: [],
   // verbose: false,
