@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Deno Launch Program",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/src/main.ts",
+      "outFiles": ["${workspaceRoot}/build/**/*.js"],
+      "runtimeExecutable": "${env:HOME}/.deno/bin/deno",
+      "runtimeArgs": ["--allow-read"],
+      "args": [],
+      "stopOnEntry": true,
+      "restart": false,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true
+    },
+    // {
+    //   "name": "Deno Tests",
+    //   "type": "node",
+    //   "request": "attach",
+    //   "port": 9229,
+    //   "preLaunchTask": "tests"
+    // }
+  ]
+}

@@ -1,0 +1,12 @@
+// {
+//   "version": "2.0.0",
+//   "tasks": [
+//     {
+//       "label": "tests",
+//       "command": "${env:HOME}/.deno/bin/deno test --allow-read ${workspaceFolder}/tests/main_test.ts",
+//       "options": {
+//         "cwd": "${workspaceRoot}/tests"
+//       }
+//     },
+//   ]
+// }
