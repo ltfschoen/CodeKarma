@@ -1,0 +1,14 @@
+# no big tech
+avoid:
+  - content:
+    - google
+
+# something nice?
+recommend:
+  - content:
+    - linux
+
+require:
+  # license here
+  - license:
+    - GPL

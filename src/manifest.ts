@@ -1,4 +1,4 @@
-import { parseArgs, parse } from "./dependencies.ts";
+import { fs, parseArgs, parse, path, YAML } from "./dependencies.ts";
 import { parseCommandLine } from "./util.ts";
 
 // result | name | args
@@ -30,15 +30,40 @@ export class Manifest {
     return this._rules;
   }
 
-  constructor(private text: string) {
-    this._rules = text.split("\n")
-      .filter(line => line.trim() !== "" && !line.trim().startsWith("#"))
-      .map(line => new Rule(line));
+  constructor(private stringifiedYamlText: string) {
+    this.setRules(stringifiedYamlText);
   }
 
-  static load(path: string) {
-    const text = Deno.readTextFileSync(path);
-    return new Manifest(text);
+  static load(filePath: string) {
+    const fileExt = path.extname(filePath).slice(1);
+    console.log('fileExt', fileExt);
+    if (fileExt && fileExt !== 'yaml' && fileExt !== 'yml') {
+      throw new Error("Manifest file should have a .yml or .yaml file extension");
+    }
+    const file = fs.readFileSync(filePath, 'utf8')
+    // console.log("yaml parse: ", YAML.parse(file));
+    // console.log("yaml stringify: ", YAML.stringify(YAML.parse(file)));
+    const stringifiedYamlText = YAML.stringify(YAML.parse(file));
+    return new Manifest(stringifiedYamlText);
+  }
+
+  private setRules(stringifiedYamlText: string) {
+    // example: { recommend: [ { license: [ "GPL" ] } ] }
+    const parsedYaml = YAML.parse(stringifiedYamlText);
+    console.log('parsedYaml: ', parsedYaml);
+    let contains, line;
+    for (const [keyResult, valueOuterArr] of Object.entries(parsedYaml)) {
+      for (let objIdx = 0; objIdx < valueOuterArr.length; objIdx++) {
+        for (const [keyName, valueInnerArr] of Object.entries(valueOuterArr[objIdx])) {
+          for (let idx = 0; idx < valueInnerArr.length; idx++) {
+            contains = valueInnerArr[idx].trim() !== "" && valueInnerArr[idx].trim();
+            line = `${keyResult} ${keyName} --contains=${contains}`;
+            this._rules.push(new Rule(line));
+          }
+        }
+      }
+    }
+    console.log('this._rules: ', this._rules);
   }
 }
 
