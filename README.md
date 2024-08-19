@@ -22,6 +22,10 @@ deno test --allow-read ${workspaceFolder}./tests/main_test.ts
 * Setup VS Code or A or similar. 
   * Go to marketplace and add Deno extension (ID denoland.vscode-deno).
 * Install the (Deno CLI)[https://deno.com/#installation].
+* Install binary
+```bash
+./install.sh
+```
 * Run the following command:
 ```bash
 ./run.sh
@@ -35,6 +39,7 @@ To check your code, go to the root folder of your project and run `codekarma`
 It will expect a manifest, either in the root folder called `codekarma.manifest` or you pass different location with the `--manifest` flag.
 
 ```bash
+./install.sh
 codekarma --manifest my.manifest
 ```
 
