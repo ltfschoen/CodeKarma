@@ -36,8 +36,9 @@ async function main(args: string[]): Promise<void> {
   console.log('parameters: ', JSON.stringify(parameters, null, 2));
   const plugins = await loadPlugins(join(root, config.plugin.folder), config.plugin.suffix);
   const manifest = Manifest.load(join(root, parameters.manifest));
-  const files = await listRecursively(root);
-  console.log(`✨ Running Code Karma manifest ${parameters.manifest} on ${root} with plugins ${Array.from(plugins.keys())} ✨\n`);
+  const targetDir = parameters.project;
+  const files = await listRecursively(targetDir);
+  console.log(`✨ Running Code Karma manifest ${parameters.manifest} on ${targetDir} with plugins ${Array.from(plugins.keys())} ✨\n`);
   run(parameters, manifest, plugins, files);
 }
 

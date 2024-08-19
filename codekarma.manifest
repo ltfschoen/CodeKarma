@@ -3,3 +3,5 @@ avoid content --contains=google
 
 # something nice?
 recommend content --contains=linux
+
+require license --contains=GPL
