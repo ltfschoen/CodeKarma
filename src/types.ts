@@ -8,6 +8,7 @@ export type Parameters = {
   verbose?: boolean;
   recursive?: boolean;
   watch?: boolean;
+  _: string[],
 };
 
 export interface Plugin {

@@ -1,6 +1,8 @@
 import { parseArgs, parse } from "./dependencies.ts";
 import { parseCommandLine } from "./util.ts";
 
+// result | name | args
+// avoid content --contains=google
 export class Rule {
   readonly definition: string;
   readonly result: string;

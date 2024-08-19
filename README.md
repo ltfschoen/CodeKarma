@@ -11,6 +11,12 @@ compliance of dependencies in a repository against a manifesto of an ideology.
 
 https://github.com/users/ltfschoen/projects/2
 
+# Tests
+
+```
+deno test --allow-read ${workspaceFolder}./tests/main_test.ts
+```
+
 # Working Demo
 
 * Setup VS Code or A or similar. 
